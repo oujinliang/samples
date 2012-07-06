@@ -7,18 +7,22 @@ package org.jinou.test
 
 /**
  * 
-2. 给定一个二叉树， 每个节点都是字符串。
-•  查询第一个（父节点优先, 左子节点优先）包含某个字符串 (a) 的节点
-•  查询第一个包含 字符串 a 和 b 的节点
-•  查询第一个包含 字符串 a 或 b 的节点
-•  查询第一个包含 字符串 a 和 b 和 c 的节点
-•  查询第一个不包含 字符串 a 和 b 的节点
-•  查询第一个包含 字符串 a 和 b ，但不包含 c 的节点
-•  其他可能的要求 查询第一个。。。
-设计API 提供以上功能并实现， 要求： 调用方简单好用， 程序结构清晰。
+ 给定一个二叉树， 每个节点都是字符串。
+    查询第一个（父节点优先, 左子节点优先）包含某个字符串 (a) 的节点
+    查询第一个包含 字符串 a 和 b 的节点
+    查询第一个包含 字符串 a 或 b 的节点
+    查询第一个包含 字符串 a 和 b 和 c 的节点
+    查询第一个不包含 字符串 a 和 b 的节点
+    查询第一个包含 字符串 a 和 b ，但不包含 c 的节点
+    其他可能的要求 查询第一个。。。
+ 设计API 提供以上功能并实现， 要求： 调用方简单好用， 程序结构清晰。
 
  */
+ 
+// ===
 
+/** A tree node.
+ */ 
 class Node[A](val value: A, left: Node[A], right: Node[A]) {
     def this(value: A) = this(value, null, null)
     
@@ -41,6 +45,9 @@ class Predicate[A] (val pred: A => Boolean) {
     def unary_!()             : Predicate[A] = new Predicate(value => !pred(value))
 }
 
+/**
+ * The main test method 
+ */
 object Test {
     val tree = new Node("com", 
                    new Node("xiaomi", 
@@ -61,12 +68,19 @@ object Test {
     def main(args: Array[String]) {
         val contains = (value: String) => new Predicate((node: String)=> node != null && node.contains(value)) 
 
+        // Which one is better? passing a function or a predicate object?
+        
+        // option 1: a function.
         tree.find(it => it.contains("llo") && it.contains("xiao"))
+        
+        // option 2: a predicate object.
         tree.find(contains("llo") && contains("xiao"))
         
         tree.find(it => it.contains("user") && it.contains("o") && !it.contains("nect"))
         tree.find(contains("user") && contains("o") && !contains("nect"))
         
+        
+        // compose different expressions.
         validate("hello",  contains("llo"))
         validate("api",    contains("api"))
         validate("miliao", contains("mi") && !contains("xiao"))
